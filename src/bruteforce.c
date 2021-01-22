@@ -9,11 +9,12 @@ char numbers[] = "0123456789";
 char special_chars[] = "!@#$%^&*.,;:-_(){}[]";
 char alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*.,;:-_(){}[]";
 
-void generate(int maxlen) {
+char *generate(int maxlen) {
     int   alphaLen = strlen(alphabet);
     int   len      = 0;
     char *buffer   = malloc((maxlen + 1) * alphaLen * alphaLen * alphaLen);
     int  *letters  = malloc(maxlen * sizeof(int));
+	char endResult[400];
 
     if (buffer == NULL || letters == NULL) {
 		fprintf(stderr, "Not enough memory.\n");
@@ -38,7 +39,7 @@ void generate(int maxlen) {
 		buffer[j++] = '\n';
 	    }
 		
-	    write(STDOUT_FILENO, buffer, bufLen);
+	    sprintf(endResult, buffer);
 	    continue;
 	} else if (len == 2) {
 	    // Also a special case.
@@ -57,7 +58,7 @@ void generate(int maxlen) {
 		}
 	    }
 		
-	    write(STDOUT_FILENO, buffer, bufLen);
+	    sprintf(endResult, buffer);
 	    continue;
 	}
 
@@ -92,7 +93,7 @@ void generate(int maxlen) {
 
 	// Write the first sequence out.
 	
-	write(STDOUT_FILENO, buffer, bufLen);
+	sprintf(endResult, buffer);
 
 	// Special case for length 3, we're already done.
 	if (len == 3)
@@ -124,7 +125,7 @@ void generate(int maxlen) {
 		// No wraparound, so we finally finished incrementing.
 		// Write out this set.  Reset i back to second to last letter.
 		
-		write(STDOUT_FILENO, buffer, bufLen);
+		sprintf(endResult, buffer);
 		i = len - 4;
 		continue;
 	    }
@@ -142,14 +143,10 @@ void generate(int maxlen) {
     // Clean up.
     free(letters);
     free(buffer);
+	return endResult;
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
-	fprintf(stderr, "Usage: %s Length\n", argv[0]);
-	exit(1);
-    }
-
-    generate(atoi(argv[1]));
+    printf("%s\n", generate(4));
     return 0;
 }
